@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 import axios from 'axios'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { CsrfToken } from './types/types'
 import { useAppSelector } from './app/hooks'
 import { selectCsrfState } from './slices/appSlice'
+import { Auth } from './components/auth'
+import { Todo } from './components/todo'
 
 function App() {
   const csrf = useAppSelector(selectCsrfState)
@@ -15,7 +18,18 @@ function App() {
     }
     getCsrfToken()
   }, [csrf])
-  return <div></div>
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/">
+          <Auth />
+        </Route>
+        <Route exact path="/todo">
+          <Todo />
+        </Route>
+      </Switch>
+    </BrowserRouter>
+  )
 }
 
 export default App
