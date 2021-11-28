@@ -1,4 +1,4 @@
-import { VFC } from 'react'
+import { VFC, useState } from 'react'
 import { LogoutIcon } from '@heroicons/react/outline'
 import { useProcessAuth } from '../hooks/useProcessAuth'
 import { useQueryTasks } from '../hooks/useQueryTasks'
@@ -10,11 +10,15 @@ import { useAppSelector } from '../app/hooks'
 import { useAppDispatch } from '../app/hooks'
 import { setEditedTask } from '../slices/appSlice'
 import { selectTask } from '../slices/appSlice'
+import { useQuerySingleTask } from '../hooks/useQuerySingleTask'
 
 export const Todo: VFC = () => {
+  const [id, setId] = useState('')
   const { logout } = useProcessAuth()
   const { data: dataUser } = useQueryUser()
   const { data: dataTasks, isLoading: isLoadingTasks } = useQueryTasks()
+  const { data: dataSingleTask, isLoading: isLoadingTask } =
+    useQuerySingleTask(id)
   const { processTask } = useProcessTask()
   const dispatch = useAppDispatch()
   const editedTask = useAppSelector(selectTask)
@@ -67,10 +71,17 @@ export const Todo: VFC = () => {
               id={task.id}
               title={task.title}
               description={task.description}
+              setId={setId}
             />
           ))}
         </ul>
       )}
+      <h2 className="mt-3 font-bold">Selected Task</h2>
+      {isLoadingTask && <p>Loading...</p>}
+      <p className="my-1 text-blue-500 text-sm">{dataSingleTask?.title}</p>
+      <p className="my-1 text-blue-500 text-sm">
+        {dataSingleTask?.description}
+      </p>
     </div>
   )
 }
